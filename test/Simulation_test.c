@@ -26,14 +26,14 @@ int main(){
 }
 
 int test_read_input(){
-    JobQueue* jobQueue = readInput("testinput/input.txt");
-    if(jobQueue == NULL){
+    JobQueue* arrivalQ = readInput("testinput/input.txt");
+    if(arrivalQ == NULL){
         printf("Test Failed: readInput returned NULL\n");
         return 1;
     }
-    printf("Jobs read successfully. Total jobs: %d\n", jobQueue->size);
-    for(int i = 0; i < jobQueue->size; i++){
-        Job* job = jobQueue->jobs[i];
+    printf("Jobs read successfully. Total jobs: %d\n", arrivalQ->size);
+    for(int i = 0; i < arrivalQ->size; i++){
+        Job* job = arrivalQ->jobs[i];
         printf("Job %d: PID=%d, ArrivalTime=%d, Duration=%d\n", i+1, job->pid, job->arrivalTime, job->duration);
     }
     return 0;
