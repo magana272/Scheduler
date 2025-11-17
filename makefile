@@ -31,12 +31,12 @@ $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 # Build step for C source
 $(BUILD_DIR)/%.c.o: %.c
 	mkdir -p $(dir $@)
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -g -c $< -o $@
 
 # Build step for C++ source
 $(BUILD_DIR)/%.cpp.o: %.cpp
 	mkdir -p $(dir $@)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -g -c $< -o $@
 
 
 
@@ -46,10 +46,10 @@ clean:
 	rm -r $(BUILD_DIR)
 	rm -f Scheduler_test minheap_test simulation_test
 test:
-	gcc test/Scheduler_test.c src/Scheduler/Scheduler.c src/Queue/Queue.c src/Queue/MinHeap.c -o Scheduler_test
-	gcc ${TEST_DIR}/MinHeap_test.c src/Queue/MinHeap.c src/Job/Job.c -o minheap_test
-	gcc ${TEST_DIR}/Simulation_test.c src/Simulation/Simulation.c src/Queue/Queue.c src/Queue/MinHeap.c src/Scheduler/Scheduler.c -o simulation_test
-
+	gcc test/Scheduler_test.c src/Scheduler/Scheduler.c src/Queue/Queue.c src/Queue/MinHeap.c -g -o Scheduler_test
+	gcc ${TEST_DIR}/MinHeap_test.c src/Queue/MinHeap.c src/Job/Job.c src/IO/IO.c -g -o minheap_test
+	gcc ${TEST_DIR}/Simulation_test.c src/Simulation/Simulation.c src/Queue/Queue.c  src/IO/IO.c src/Queue/MinHeap.c src/Scheduler/Scheduler.c src/Job/Job.c -g -o simulation_test
+	gcc ${TEST_DIR}/IO_test.c src/IO/IO.c src/Job/Job.c -g -o io_test
 # Include the .d makefiles. The - at the front suppresses the errors of missing
 # Makefiles. Initially, all the .d files will be missing, and we don't want those
 # errors to show up.

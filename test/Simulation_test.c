@@ -1,11 +1,15 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "../src/Simulation/Simulation.h"
 #include "../src/Queue/Queue.h"
 #include "../src/Queue/MinHeap.h"
 #include "../src/Scheduler/Scheduler.h"
 #include "../src/Job/Job.h"
+#include <assert.h>
 
 int test_read_input();
+int test_add_ready_to_run_job();
+
 
 int main(){
 
@@ -15,16 +19,35 @@ int main(){
     printf("Test Failed: Simulation creation returned NULL\n");
     return 1;
   }
+  // Scheduler* sch = simulation->scheduler;
+  // Job* j = malloc(sizeof(Job));
+  // j->pid = 1;
+  // j->duration = 5;
+  // sch->addJob(sch, j);
+
   test_read_input();
-  // printf("Simulation created successfully with total jobs: %d\n", simulation->total_jobs);
-  // JobQueue* arrivingJobs = simulation->getArrivingJobs(simulation, 0);
-  // Job* job = dequeue(arrivingJobs);
-  // printf("First arriving job at time 0: PID=%d, ArrivalTime=%d, Duration=%d\n", job->pid, job->arrivalTime, job->duration);
-
-
+  printf("Testing| Ready to run\n");
+  test_add_ready_to_run_job();
   return 0;
 }
 
+
+int test_add_ready_to_run_job(){
+  JobQueue* arrivalQ = newJobQueue();
+  Job* j1 = createJob(1,0, 2, READY);
+  Job* j2 = createJob(2,0, 2, READY);
+  enqueue(arrivalQ, j1);
+  enqueue(arrivalQ, j2);
+  Simulation* simulation = newSimulation("testinput/input.txt", RR);
+  Scheduler* sch = simulation->scheduler;
+  simulation->arrivalQueue = arrivalQ;
+  add_ready_to_run_job(simulation,0);
+  Job* j =  sch->getNextJob(sch);
+  assert(j->pid == 1);
+  j =  sch->getNextJob(sch);
+  assert(j->pid == 2);
+  return 0;
+}
 int test_read_input(){
     JobQueue* arrivalQ = readInput("testinput/input.txt");
     if(arrivalQ == NULL){
