@@ -112,6 +112,7 @@ Simulation *newSimulation(char *file_name, ScheduleType schedule_type)
   simulation->arrivalQueue = job_arrival_q;
   simulation->done = 0;
   simulation->completed = newJobQueue();
+  simulation->n_completed_jobs = 0;
   return simulation;
 }
 
@@ -135,6 +136,13 @@ void logStatistics(Simulation *simulation)
   const char *headerline3 = "          | state           | I/O state       |                 |\n";
   const char *headerline4 = "==========+=================+=================+=================+\n";
   printf("%s%s%s%s", headerline1, headerline2, headerline3, headerline4);
+
+  int total_simulation_time = 0;
+  int total_number_of_jobs = simulation->n_completed_jobs;
+  int shortest_job_completion_time = __INT_MAX__;
+  int longest_job_completion_time = 0;
+  int accumulated_ready_time = 0;
+  int accumulated_sleeping_time = 0;
   while(simulation->n_completed_jobs--)
   {
     Job *completed_job = dequeue(simulation->completed);
@@ -155,7 +163,23 @@ void logStatistics(Simulation *simulation)
             completed_job->timeWaitingForIO,
             completed_job->timeInReadyToRunState + completed_job->timeWaitingForIO + completed_job->timeInRunningState);
     printf("%s", formatterString);
+
+    total_simulation_time += completed_job->timeInReadyToRunState + completed_job->timeWaitingForIO + completed_job->timeInRunningState;
+    if (completed_job->completionTime < shortest_job_completion_time){
+        shortest_job_completion_time = completed_job->completionTime;
+    }
+    if (completed_job->completionTime > longest_job_completion_time){
+        longest_job_completion_time = completed_job->completionTime;
+    }
+    accumulated_ready_time += completed_job->timeInReadyToRunState;
+    accumulated_sleeping_time += completed_job->timeWaitingForIO;
   }
+  printf("Total simulation time: %d\n", total_simulation_time);
+  printf("Total number of jobs: %d\n", total_number_of_jobs);
+  printf("Shortest job completion time: %d\n", shortest_job_completion_time);
+  printf("Longest job completion time: %d\n", longest_job_completion_time);
+  printf("Average time in ready to run state: %d\n", accumulated_ready_time / total_number_of_jobs);
+  printf("Average time Sleeping on I/O: %d\n", accumulated_sleeping_time / total_number_of_jobs);
 }
 
 int checkIOCompletion(Simulation *simulation, Scheduler *scheduler, int clock)
@@ -192,6 +216,7 @@ int checkIOCompletion(Simulation *simulation, Scheduler *scheduler, int clock)
 
 int isComplete(Simulation *simulation)
 {
+  printf("Completed Jobs: %d / %d\n", simulation->n_completed_jobs, simulation->total_jobs);
   return simulation->n_completed_jobs == simulation->total_jobs;
 }
 

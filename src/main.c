@@ -12,10 +12,6 @@ int clock = 0;
 int main(int argc, char *argv[])
 {
 
-  /**********************
-   * 1) Validate arguments
-   **********************/
-
   int err = validate_args(argc, argv);
   if (err)
   {
@@ -23,16 +19,7 @@ int main(int argc, char *argv[])
   }
   char *file_input;
   ScheduleType schedule_type;
-  /**********************
-   * 2) Get File Input and Schedule Type
-   **********************/
   getFileAndScheduleType(&file_input, &schedule_type, argc, argv);
-
-  /**********************
-   * 3) Create Simulation
-   **********************/
-  // printf("File Input: %s\n, Schedule Type: %d\n", file_input, schedule_type);
-  // printf("Creating Simulation...\n");
   Simulation *simulation = newSimulation(file_input, schedule_type);
   Scheduler *scheduler = simulation->scheduler;
   int preemptive_scheduler = (scheduler->scheduleType == SJF) || (scheduler->scheduleType == MLFS);
@@ -100,12 +87,12 @@ int main(int argc, char *argv[])
           printf("Time: %d\n", clock);
           printf("\t%sJob PID: %d completed at time t = %d\n%s", KGRN, current_job->pid, clock, KWHT);
           current_job->status = COMPLETE;
-          scheduler->n_completed_jobs += 1;
           simulation->n_completed_jobs += 1;
           current_job_completed = 1;
           current_job->completionTime = clock;
           current_job->timeInRunningState++;
           enqueue(simulation->completed, current_job);
+          scheduler->increment_ready_to_run_state(scheduler);
           break;
         }
         if (current_job_preempted)
@@ -123,6 +110,7 @@ int main(int argc, char *argv[])
           current_job->status = WAITING_FOR_IO;
           current_job->timeWaitingForIO += 1;
           enqueue(scheduler->waiting_for_IO_queue, current_job);
+          scheduler->increment_ready_to_run_state(scheduler);
           break;
         }
         if (current_job_time_slice_completed)
@@ -130,9 +118,9 @@ int main(int argc, char *argv[])
           printf("\tTime slice completed for job PID: %d at time t = %d\n", current_job->pid, clock);
           current_job->status = RUNNING;
           scheduler->addJob(scheduler, current_job);
+          scheduler->increment_ready_to_run_state(scheduler);
           break;
         }
-
         clock++;
         current_job->timeSlice--;
         current_job->timeRemaining--;
