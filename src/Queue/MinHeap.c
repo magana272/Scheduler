@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "MinHeap.h"
-
-JobMinHeap *newJobMinHeap(int capacity)
-{
+// Min-Heap implementation for Jobs based on their duration (for SJF scheduling)
+    JobMinHeap *newJobMinHeap(int capacity)
+    {
     JobMinHeap *heap = malloc(sizeof(JobMinHeap));
     if (!heap)
     {
@@ -29,7 +29,6 @@ int insertJobMinHeap(JobMinHeap *heap, Job *job)
     }
     heap->jobs[heap->size] = job;
     heap->size++;
-    // Heapify up
     int index = heap->size - 1;
     while (index != 0)
     {
@@ -55,7 +54,6 @@ Job *extractMinJobMinHeap(JobMinHeap *heap)
     Job *minJob = heap->jobs[0];
     heap->jobs[0] = heap->jobs[heap->size - 1];
     heap->size--;
-    // Heapify down
     int index = 0;
     while (1)
     {
@@ -90,4 +88,13 @@ void freeJobMinHeap(JobMinHeap *heap)
         free(heap->jobs);
         free(heap);
     }
+}
+
+Job *peek_MinHeap(JobMinHeap *heap)
+{
+    if (heap->size == 0)
+    {
+        return NULL;
+    }
+    return heap->jobs[0];
 }

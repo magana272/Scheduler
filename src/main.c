@@ -8,163 +8,144 @@
 #include "./IO/IO.h"
 
 int clock = 0;
+
 int main(int argc, char *argv[])
 {
+
+  /**********************
+   * 1) Validate arguments
+   **********************/
+
   int err = validate_args(argc, argv);
   if (err)
   {
-    // exit nicely
     exit(1);
   }
   char *file_input;
   ScheduleType schedule_type;
-
+  /**********************
+   * 2) Get File Input and Schedule Type
+   **********************/
   getFileAndScheduleType(&file_input, &schedule_type, argc, argv);
-  printf("File Input: %s\n", file_input);
-  printf("Schedule Type: %d\n", schedule_type);
-  printf("Starting Simulation...\n");
+
+  /**********************
+   * 3) Create Simulation
+   **********************/
+  // printf("File Input: %s\n, Schedule Type: %d\n", file_input, schedule_type);
+  // printf("Creating Simulation...\n");
   Simulation *simulation = newSimulation(file_input, schedule_type);
-  printf("Simulation created successfully...\n");
   Scheduler *scheduler = simulation->scheduler;
   int preemptive_scheduler = (scheduler->scheduleType == SJF) || (scheduler->scheduleType == MLFS);
-  JobQueue *jobs_at_timeT = simulation->getArrivingJobs(simulation, clock);
-  if (jobs_at_timeT == NULL)
+  char *schedule_type_str;
+  switch (scheduler->scheduleType)
   {
-    printf("No jobs at time t = %d\n", clock);
+  case RR:
+    schedule_type_str = "RR";
+    break;
+  case SJF:
+    schedule_type_str = "SJF";
+    break;
+  case MLFS:
+    schedule_type_str = "MLFS";
+    break;
+  default:
+    schedule_type_str = "Unknown";
   }
-  while (!isEmpty(jobs_at_timeT))
-  {
-    printf("I'm here??\n");
-    Job *j = dequeue(jobs_at_timeT);
-    if(j != NULL){
-      printf("Adding Job PID: %d at time t = %d\n", j->pid, clock);
-    }
-    scheduler->addJob(scheduler, j);
-  }
+  printf("\n\n\n");
+  printf("########################################\n");
+  printf("# Simulation created successfully...  \n");
+  printf("# scheduleType:           %s           \n", schedule_type_str);
+  printf("# preemptive_scheduler: %s             \n", preemptive_scheduler ? "T" : "F");
+  printf("# Total Jobs to complete: %d           \n", simulation->total_jobs);
+  printf("# File Input: %s           \n", file_input);
+  printf("########################################\n");
+
+  /**********************
+   * 4) Initialize variables and setup for simulation loop
+   *********************/
+  printf("Running Simulation...\n");
+  int current_job_time_slice_completed = 0;
+  int current_job_preempted = 0;
+  int current_job_completed = 0;
+  int current_job_made_io_request = 0;
+  add_ready_to_run_job(simulation, clock);
+  // clock++;
   srand(1);
-  clock++;
-  printf("Clock: %d\n", clock);
-  printf("scheduler->scheduleType: %d\n", scheduler->scheduleType);
-  printf("preemptive_scheduler: %d\n", preemptive_scheduler);
-  while (!simulation->done)
+  // printf("Time: %d\n", clock);
+  // curr
+  // Simulation Loop
+  while (!isComplete(simulation))
   {
-    printf("Getting next job at time t = %d\n", clock);
+    printf("Time: %d\n", clock);
+    add_ready_to_run_job(simulation, clock);
     Job *current_job = scheduler->getNextJob(scheduler);
-    if (current_job != NULL)
+    if (current_job == NULL)
     {
-      printf("Current Job PID: %d\n", current_job->pid);
-      current_job->timeSlice = scheduler->current_quantum;
+      checkIOCompletion(simulation, scheduler, clock);
+      clock++;
     }
-    int current_job_was_swapped_out = 0;
-    int status;
-    while (1)
+    else
     {
-      /*******************************************************************************
-       *
-       *     Jobs at time t are added to scheduler
-       *
-       *
-       ******************************************************************************/
-      JobQueue *jobs_at_timeT = simulation->getArrivingJobs(simulation, clock);
-      // If there are no jobs
-      if (jobs_at_timeT == NULL)
+      // Reset flags
+      while (1)
       {
-        printf("No jobs at time t = %d\n", clock);
-      }
-      else
-      {
-        // Add the jobs to the ready to run state
-        for (int i = 0; i < jobs_at_timeT->size; i++)
-        {
-          scheduler->addJob(scheduler, jobs_at_timeT->jobs[i]);
-        }
-      }
+        current_job_time_slice_completed = 0;
+        current_job_preempted = 0;
+        current_job_completed = 0;
+        current_job_made_io_request = 0;
+        current_job->status = RUNNING;
+        add_ready_to_run_job(simulation, clock);
+        checkIOCompletion(simulation, scheduler, clock);
+        current_job_completed = isJobComplete(current_job);
+        current_job_made_io_request = checkIfMadeIORequest(current_job, clock);
+        current_job_preempted = isJobPreempted(scheduler, current_job);
+        current_job_time_slice_completed = (current_job->timeSlice == 1) && (scheduler->scheduleType != SJF);
 
-      /************************************************
-       *
-       * For the Jobs waiting for IO
-       * Check if there are done
-       *
-       *************************************************/
-      //      JobQueue *new_queue = NULL; // or list
-      if (!isEmpty(scheduler->waiting_for_IO_queue))
-      {
-        JobQueue *new_queue = newJobQueue();
-        while (!isEmpty(scheduler->waiting_for_IO_queue))
+        if (current_job_completed)
         {
-          Job *job = dequeue(scheduler->waiting_for_IO_queue);
-          int status = IO_complete();
-          if (status == 1)
-          {
-            job->status = READY;
-            scheduler->addJob(scheduler, job);
-          }
-          else
-          {
-            job->timeWaitingForIO++;
-            enqueue(new_queue, job);
-          }
-        }
-        scheduler->waiting_for_IO_queue = new_queue;
-      }
-
-      /************************************************
-       *   Check to see if the job is complete
-       *   current_job->timeRemaining == 1
-       *
-       *
-       *************************************************/
-      if (current_job->timeRemaining == 1)
-      {
-        current_job->status = COMPLETE;
-        scheduler->n_completed_jobs += 1;
-        simulation->completed[scheduler->n_completed_jobs] = current_job;
-        break;
-      }
-      /************************************************
-       *  Check if there are higher priority jobs
-       *  (if we are using SJF or MLFS)
-       *
-       *************************************************/
-      if (preemptive_scheduler)
-      {
-        int higher_priority_jobs_on_the__ready_to_run_state = scheduler->preemptive(scheduler, current_job);
-        if (higher_priority_jobs_on_the__ready_to_run_state)
-        {
-          current_job_was_swapped_out = 1;
-        }
-      }
-      if (current_job->status != COMPLETE) // ?? Check to see if current job needs to be IO bound ??
-      {
-        status = IO_request();
-        if (status == 1)
-        {
-          current_job->status = WAITING_FOR_IO;
-          enqueue(scheduler->waiting_for_IO_queue, current_job); /// Could more later ?
-        }
-        if (current_job->timeSlice == 1)
-        {
-          current_job_was_swapped_out = 1;
-        }
-      }
-
-      if (current_job_was_swapped_out)
-      {
-        if (current_job->status != COMPLETE && current_job->status != WAITING_FOR_IO)
-        {
-          current_job->status = READY;
-          scheduler->addJob(scheduler, current_job);
+          clock++;
+          printf("Time: %d\n", clock);
+          printf("\t%sJob PID: %d completed at time t = %d\n%s", KGRN, current_job->pid, clock, KWHT);
+          current_job->status = COMPLETE;
+          scheduler->n_completed_jobs += 1;
+          simulation->n_completed_jobs += 1;
+          current_job_completed = 1;
+          current_job->completionTime = clock;
+          current_job->timeInRunningState++;
+          enqueue(simulation->completed, current_job);
           break;
         }
-        else
+        if (current_job_preempted)
         {
+          printf("\tSwapping out current job PID: %d at time t = %d\n", current_job->pid, clock);
+          Job *j = current_job;
+          printf("\tGetting next job after preemption at time t = %d\n", clock);
+          current_job = scheduler->getNextJob(scheduler);
+          scheduler->addJob(scheduler, j);
+
+        }
+        if (current_job_made_io_request)
+        {
+          printf("\t%sJob PID: %d made IO request at time t = %d%s\n", KGRN, current_job->pid, clock, KWHT);
+          current_job->status = WAITING_FOR_IO;
+          current_job->timeWaitingForIO += 1;
+          enqueue(scheduler->waiting_for_IO_queue, current_job);
+          break;
+        }
+        if (current_job_time_slice_completed)
+        {
+          printf("\tTime slice completed for job PID: %d at time t = %d\n", current_job->pid, clock);
+          current_job->status = READY;
           scheduler->addJob(scheduler, current_job);
         }
+
+        clock++;
+        current_job->timeSlice--;
+        current_job->timeRemaining--;
+        scheduler->increment_ready_to_run_state(scheduler);
+        current_job->timeInRunningState++;
       }
-      // do bookkeeping and statistics
-      clock++;
-      current_job->timeSlice--;
-      current_job->timeRemaining--;
     }
   }
+  logStatistics(simulation);
 }

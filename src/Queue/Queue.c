@@ -28,6 +28,9 @@ int enqueue(JobQueue* q, Job* j){
     return 0; // Success
 }
 Job* dequeue(JobQueue* q){
+    if(q == NULL) {
+        return NULL;
+    }
     if(isEmpty(q)){
         return NULL; // Queue is empty
     }
@@ -54,12 +57,12 @@ JobQueue* newJobQueue(){
     return q;
 }
 JobQueue** newJobQueues(int levels){
-    JobQueue** queues = malloc(sizeof(JobQueue*) * levels);
+    JobQueue** queues = malloc(sizeof(JobQueue*) * MAX_LEVELS);
     if(!queues){
         printf("Malloc Failed");
         exit(1);
     }
-    for(int i = 0; i < levels; i++){
+    for(int i = 0; i < MAX_LEVELS; i++){
         queues[i] = newJobQueue();
     }
     return queues;

@@ -9,6 +9,7 @@ typedef struct JobMinHeap
 } JobMinHeap;
 
 JobMinHeap *newJobMinHeap(int capacity);
+Job *peek_MinHeap(JobMinHeap *heap);
 int insertJobMinHeap(JobMinHeap *heap, Job *job);
 Job *extractMinJobMinHeap(JobMinHeap *heap);
 void freeJobMinHeap(JobMinHeap *heap);

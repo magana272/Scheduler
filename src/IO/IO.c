@@ -1,10 +1,9 @@
 #include "IO.h"
 #include <stdlib.h>
-// #include "../Utils/os_rand.h"
 
 void os_rand()
 {
-  srand(1);
+  srand(0);
 }
 int IO_request()
 {

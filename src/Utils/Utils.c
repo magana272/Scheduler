@@ -3,7 +3,7 @@
 void getFileAndScheduleType(char **file_input, ScheduleType *schedule_type, int argc, char *argv[])
 {
 
-    *file_input = argc > 1 ? argv[1] : "input.txt";
+    *file_input = argc > 1 ? argv[1] : "./testinput/input.txt";
     if (argc > 2)
     {
         if (strcmp(argv[2], "RR") == 0)
