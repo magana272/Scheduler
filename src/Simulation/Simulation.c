@@ -157,7 +157,7 @@ void logStatistics(Simulation *simulation)
       printf("Malloc Failed");
       exit(1);
     }
-    sprintf(formatterString, "%d      | %d               | %d               | %d               |\n",
+    sprintf(formatterString, "%-6d | %-18d | %-18d | %-12d |\n",
             completed_job->pid,
             completed_job->timeInReadyToRunState,
             completed_job->timeWaitingForIO,
