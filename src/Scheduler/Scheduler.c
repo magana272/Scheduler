@@ -35,10 +35,10 @@ Scheduler* newScheduler(ScheduleType schedule_type)
     case MLFS:
         scheduler->getNextJob = MLFS_getNext;
         scheduler->addJob = MLFS_addJob;
-        scheduler->Levels = newJobQueues(3); // 3 levels for MLFS
-        scheduler->quantum[0] = 1;
-        scheduler->quantum[1] = 2;
-        scheduler->quantum[2] = 3;
+        scheduler->Levels = newJobQueues(3);
+        scheduler->quantum[0] = 3;
+        scheduler->quantum[1] = 4;
+        scheduler->quantum[2] = 5;
         scheduler->current_quantum = scheduler->quantum[0];
         scheduler->preemptive = MLFS_preemptive;
         scheduler->increment_ready_to_run_state = increment_ready_to_run_state_MLFS;
@@ -142,8 +142,8 @@ int RR_addJob(Scheduler* self, Job *j)
     int PRIORITY = 0;
     j->priority = PRIORITY;
     j->status = READY;
-    j->timeSlice = ((Scheduler *)self)->quantum[PRIORITY];
-    int err = enqueue(((Scheduler *)self)->Levels[PRIORITY], j);
+    j->timeSlice = self->quantum[PRIORITY];
+    int err = enqueue(self->Levels[PRIORITY], j);
     if (err)
     {
         printf("Enqueue Failed");
@@ -165,23 +165,23 @@ int SJF_addJob(Scheduler* self, Job *j)
 Job *MLFS_getNext(Scheduler* self)
 {
     int priority = 0;
-    while (priority < MAX_LEVELS)
+    while (priority < MAX_LEVELS-1)
     {
-        if (!isEmpty(((Scheduler *)self)->Levels[priority]))
+        if (!isEmpty(self->Levels[priority]))
         {
             break;
         }
         priority++;
     }
-    Job *job = dequeue(((Scheduler *)self)->Levels[priority]);
+    Job *job = dequeue(self->Levels[priority]);
     if (job == NULL)
     {
         return NULL;
     }
-    job->timeSlice = ((Scheduler *)self)->quantum[priority];
+    job->timeSlice = self->quantum[priority];
     job->priority = priority;
     job->status = RUNNING;
-    ((Scheduler *)self)->current_quantum = ((Scheduler *)self)->quantum[priority];
+    self->current_quantum = self->quantum[priority];
     return job;
 }
 
@@ -198,7 +198,7 @@ int MLFS_addJob(Scheduler* self, Job *j)
     else {
         PRIORITY = 0;
     }
-    int err = enqueue(((Scheduler *)self)->Levels[PRIORITY], j);
+    int err = enqueue(self->Levels[PRIORITY], j);
     if (err)
     {
         printf("Enqueue Failed");

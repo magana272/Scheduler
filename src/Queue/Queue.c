@@ -13,6 +13,9 @@ Job* peek(JobQueue* q){
 }
 
 int isEmpty(JobQueue* q){
+    if (q==NULL){
+        return 1;
+    }
     return q->size == 0;
 }
 int isFull(JobQueue* q){

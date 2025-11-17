@@ -59,36 +59,29 @@ int main(int argc, char *argv[])
   printf("# Total Jobs to complete: %d           \n", simulation->total_jobs);
   printf("# File Input: %s           \n", file_input);
   printf("########################################\n");
-
-  /**********************
-   * 4) Initialize variables and setup for simulation loop
-   *********************/
   printf("Running Simulation...\n");
   int current_job_time_slice_completed = 0;
   int current_job_preempted = 0;
   int current_job_completed = 0;
   int current_job_made_io_request = 0;
   add_ready_to_run_job(simulation, clock);
-  // clock++;
   srand(1);
-  // printf("Time: %d\n", clock);
-  // curr
-  // Simulation Loop
   while (!isComplete(simulation))
   {
-    printf("Time: %d\n", clock);
+
     add_ready_to_run_job(simulation, clock);
     Job *current_job = scheduler->getNextJob(scheduler);
     if (current_job == NULL)
     {
+      printf("Time: %d\n", clock);
       checkIOCompletion(simulation, scheduler, clock);
       clock++;
     }
     else
     {
-      // Reset flags
       while (1)
       {
+        printf("Time: %d\n", clock);
         current_job_time_slice_completed = 0;
         current_job_preempted = 0;
         current_job_completed = 0;
@@ -135,8 +128,9 @@ int main(int argc, char *argv[])
         if (current_job_time_slice_completed)
         {
           printf("\tTime slice completed for job PID: %d at time t = %d\n", current_job->pid, clock);
-          current_job->status = READY;
+          current_job->status = RUNNING;
           scheduler->addJob(scheduler, current_job);
+          break;
         }
 
         clock++;
