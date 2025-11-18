@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include "MinHeap.h"
 // Min-Heap implementation for Jobs based on their duration (for SJF scheduling)
-    JobMinHeap *newJobMinHeap(int capacity)
-    {
+JobMinHeap *newJobMinHeap(int capacity)
+{
     JobMinHeap *heap = malloc(sizeof(JobMinHeap));
     if (!heap)
     {
@@ -68,14 +68,14 @@ Job *extractMinJobMinHeap(JobMinHeap *heap)
         {
             smallestIndex = rightChildIndex;
         }
-        if(leftChildIndex < heap->size && heap->jobs[leftChildIndex]->duration == heap->jobs[smallestIndex]->duration)
+        if (leftChildIndex < heap->size && heap->jobs[leftChildIndex]->duration == heap->jobs[smallestIndex]->duration)
         {
             if (heap->jobs[leftChildIndex]->pid < heap->jobs[smallestIndex]->pid)
             {
                 smallestIndex = leftChildIndex;
             }
         }
-        if(rightChildIndex < heap->size && heap->jobs[rightChildIndex]->duration == heap->jobs[smallestIndex]->duration)
+        if (rightChildIndex < heap->size && heap->jobs[rightChildIndex]->duration == heap->jobs[smallestIndex]->duration)
         {
             if (heap->jobs[rightChildIndex]->pid < heap->jobs[smallestIndex]->pid)
             {

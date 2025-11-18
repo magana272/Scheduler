@@ -69,11 +69,11 @@ int main(int argc, char *argv[])
         {
           if (clock % scheduler->boost_interval == 0 && clock != 0)
           {
-            if(simulation->verbose_mode){
+            if (simulation->verbose_mode)
+            {
               logBoosting(simulation, clock);
             }
             boost(scheduler);
-
           }
         }
         current_job_made_io_request = checkIfMadeIORequest(current_job, clock);

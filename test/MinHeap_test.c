@@ -2,17 +2,18 @@
 #include <stdlib.h>
 #include "../src/Queue/MinHeap.h"
 
-int main() {
-    JobMinHeap* heap = newJobMinHeap(10);
-    Job* job1 = malloc(sizeof(Job));
+int main()
+{
+    JobMinHeap *heap = newJobMinHeap(10);
+    Job *job1 = malloc(sizeof(Job));
     job1->pid = 1;
     job1->duration = 5;
 
-    Job* job2 = malloc(sizeof(Job));
+    Job *job2 = malloc(sizeof(Job));
     job2->pid = 2;
     job2->duration = 3;
 
-    Job* job3 = malloc(sizeof(Job));
+    Job *job3 = malloc(sizeof(Job));
     job3->pid = 3;
     job3->duration = 8;
 
@@ -20,8 +21,9 @@ int main() {
     insertJobMinHeap(heap, job2);
     insertJobMinHeap(heap, job3);
 
-    while (heap->size > 0) {
-        Job* minJob = extractMinJobMinHeap(heap);
+    while (heap->size > 0)
+    {
+        Job *minJob = extractMinJobMinHeap(heap);
         printf("Extracted Job PID: %d, Duration: %d\n", minJob->pid, minJob->duration);
     }
     freeJobMinHeap(heap);
@@ -31,4 +33,3 @@ int main() {
 
     return 0;
 }
-

@@ -10,12 +10,13 @@
 int test_read_input();
 int test_add_ready_to_run_job();
 
+int main()
+{
 
-int main(){
+  Simulation *simulation = newSimulation("testinput/input.txt", RR);
 
-  Simulation* simulation = newSimulation("testinput/input.txt", RR);
-
-  if(simulation == NULL){
+  if (simulation == NULL)
+  {
     printf("Test Failed: Simulation creation returned NULL\n");
     return 1;
   }
@@ -25,33 +26,36 @@ int main(){
   return 0;
 }
 
-
-int test_add_ready_to_run_job(){
-  JobQueue* arrivalQ = newJobQueue();
-  Job* j1 = createJob(1,0, 2, READY);
-  Job* j2 = createJob(2,0, 2, READY);
+int test_add_ready_to_run_job()
+{
+  JobQueue *arrivalQ = newJobQueue();
+  Job *j1 = createJob(1, 0, 2, READY);
+  Job *j2 = createJob(2, 0, 2, READY);
   enqueue(arrivalQ, j1);
   enqueue(arrivalQ, j2);
-  Simulation* simulation = newSimulation("testinput/input.txt", RR);
-  Scheduler* sch = simulation->scheduler;
+  Simulation *simulation = newSimulation("testinput/input.txt", RR);
+  Scheduler *sch = simulation->scheduler;
   simulation->arrivalQueue = arrivalQ;
-  add_ready_to_run_job(simulation,0);
-  Job* j =  sch->getNextJob(sch);
+  add_ready_to_run_job(simulation, 0);
+  Job *j = sch->getNextJob(sch);
   assert(j->pid == 1);
-  j =  sch->getNextJob(sch);
+  j = sch->getNextJob(sch);
   assert(j->pid == 2);
   return 0;
 }
-int test_read_input(){
-    JobQueue* arrivalQ = readInput("testinput/input.txt");
-    if(arrivalQ == NULL){
-        printf("Test Failed: readInput returned NULL\n");
-        return 1;
-    }
-    printf("Jobs read successfully. Total jobs: %d\n", arrivalQ->size);
-    for(int i = 0; i < arrivalQ->size; i++){
-        Job* job = arrivalQ->jobs[i];
-        printf("Job %d: PID=%d, ArrivalTime=%d, Duration=%d\n", i+1, job->pid, job->arrivalTime, job->duration);
-    }
-    return 0;
+int test_read_input()
+{
+  JobQueue *arrivalQ = readInput("testinput/input.txt");
+  if (arrivalQ == NULL)
+  {
+    printf("Test Failed: readInput returned NULL\n");
+    return 1;
+  }
+  printf("Jobs read successfully. Total jobs: %d\n", arrivalQ->size);
+  for (int i = 0; i < arrivalQ->size; i++)
+  {
+    Job *job = arrivalQ->jobs[i];
+    printf("Job %d: PID=%d, ArrivalTime=%d, Duration=%d\n", i + 1, job->pid, job->arrivalTime, job->duration);
+  }
+  return 0;
 }

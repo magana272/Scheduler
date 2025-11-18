@@ -6,11 +6,9 @@
 #include "../IO/IO.h"
 #include <stdio.h>
 #include <stdlib.h>
-#define BLUE  "\x1B[34m"
-#define RED   "\x1B[31m"
-#define WHITE  "\x1B[37m"
-
-
+#define BLUE "\x1B[34m"
+#define RED "\x1B[31m"
+#define WHITE "\x1B[37m"
 
 Simulation *newSimulation(char *file_name, ScheduleType schedule_type)
 {
@@ -92,7 +90,7 @@ int isComplete(Simulation *simulation)
   return simulation->n_completed_jobs == simulation->total_jobs;
 }
 
-int add_ready_to_run_job(Simulation* s, int clock)
+int add_ready_to_run_job(Simulation *s, int clock)
 {
   JobQueue *arrivingJobs = s->getArrivingJobs(s, clock);
   if (arrivingJobs == NULL)

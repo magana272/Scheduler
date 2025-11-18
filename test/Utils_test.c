@@ -2,7 +2,6 @@
 #include "../src/Utils/Utils.h"
 #include "../src/Scheduler/Scheduler.h"
 
-
 int validate_args_test(int argc, char *argv[])
 {
 
@@ -10,7 +9,6 @@ int validate_args_test(int argc, char *argv[])
 }
 void getFileAndScheduleType_test(char **file_input, ScheduleType *schedule_type, int argc, char *argv[])
 {
-
 }
 
 int main()

@@ -22,4 +22,4 @@ Simulation *newSimulation(char *file_name, ScheduleType schedule_type);
 JobQueue *getArrivingJobs(Simulation *self, int time);
 int getNumberofJob(char *file_name);
 int isComplete(Simulation *simulation);
-int add_ready_to_run_job(Simulation* s, int clock);
+int add_ready_to_run_job(Simulation *s, int clock);
