@@ -1,6 +1,7 @@
 #include "SimulationLogger.h"
 #include "../Simulation/Simulation.h"
 #include "../Job/Job.h"
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #define RED   "\x1B[31m"
@@ -104,13 +105,13 @@ void logSimulationDetails(Simulation *simulation, int clock, char *file_input)
     printf("##########################################\n");
 
     printf("# %-38s #\n", "Simulation created successfully...");
-    if (schedule_type_str == "SJF"){
+    if (strcmp(schedule_type_str, "SJF") == 0){
         printf("# %-38s #\n", "Scheduling Algorithm: Shortest Job First (SJF)");
     }
-    else if (schedule_type_str == "RR"){
+    else if (strcmp(schedule_type_str, "RR") == 0){
         printf("# %-38s #\n", "Scheduling Algorithm: Round Robin (RR)");
     }
-    else if (schedule_type_str == "MLFS"){
+    else if (strcmp(schedule_type_str, "MLFS") == 0){
         printf("# %-38s #\n", "Scheduling Algorithm: Multi-Level Feedback Queue (MLFS)");
     }
     else{
