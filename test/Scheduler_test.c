@@ -51,6 +51,7 @@ int testRRScheduler()
     return 1;
   }
   printf("All tests passed!\n");
+  return 0;
 }
 
 int testSJFScheduler()
@@ -88,4 +89,5 @@ int testSJFScheduler()
     return 1;
   }
   printf("All tests passed!\n");
+  return 0;
 }

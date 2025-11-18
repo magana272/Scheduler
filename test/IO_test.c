@@ -35,6 +35,8 @@ int IO_REQUEST_test()
     }
   }
   printf("Out of %d iterations, IO requests: %d, No IO requests: %d\n", iterations, io_request_count, no_io_request_count);
+  free(job);
+  return 0;
 }
 
 int main()
