@@ -96,7 +96,6 @@ int main(int argc, char *argv[])
           Job *j = current_job;
           current_job = scheduler->getNextJob(scheduler);
           scheduler->addJob(scheduler, j);
-          current_job->timeInRunningState++;
           logPreemption(simulation, j, current_job, clock);
         }
         if (current_job_made_io_request)
