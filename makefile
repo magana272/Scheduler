@@ -36,8 +36,34 @@ clean:
 	rm -r $(BUILD_DIR)
 	rm -f Scheduler_test minheap_test simulation_test
 test:
-	gcc test/Scheduler_test.c src/Scheduler/Scheduler.c src/Queue/Queue.c src/Queue/MinHeap.c -g -o Scheduler_test
-	gcc ${TEST_DIR}/MinHeap_test.c src/Queue/MinHeap.c src/Job/Job.c src/IO/IO.c -g -o minheap_test
-	gcc ${TEST_DIR}/Simulation_test.c src/Simulation/Simulation.c src/Queue/Queue.c  src/IO/IO.c src/Queue/MinHeap.c src/Scheduler/Scheduler.c src/Job/Job.c -g -o simulation_test
-	gcc ${TEST_DIR}/IO_test.c src/IO/IO.c src/Job/Job.c -g -o io_test
+	gcc test/Scheduler_test.c \
+	src/Simulation/Simulation.c \
+	src/Simulation/SimulationLogger.c \
+	src/Scheduler/Scheduler.c \
+	src/Queue/Queue.c \
+	src/Queue/MinHeap.c \
+	src/Job/Job.c \
+	src/IO/IO.c -g -o scheduler_test
+
+
+	gcc ${TEST_DIR}/MinHeap_test.c \
+	src/Simulation/Simulation.c src/Simulation/SimulationLogger.c src/Scheduler/Scheduler.c src/Queue/Queue.c src/Queue/MinHeap.c src/Job/Job.c src/IO/IO.c -g -o minheap_test
+
+
+# 	gcc ${TEST_DIR}/Simulation_test.c \
+# 	src/Simulation/Simulation.c \
+# 	src/Simulation/SimulationLogger.c \
+# 	src/Scheduler/Scheduler.c \
+# 	src/Queue/Queue.c \
+# 	src/Queue/MinHeap.c \
+# 	src/Job/Job.c \
+# 	 src/IO/IO.c -g -o simulation_test
+
+
+
+	gcc ${TEST_DIR}/IO_test.c \
+	src/Simulation/Simulation.c src/Simulation/SimulationLogger.c src/Scheduler/Scheduler.c src/Queue/Queue.c src/Queue/MinHeap.c src/Job/Job.c src/IO/IO.c -g -o io_test
+
+	gcc ${TEST_DIR}/Queue_test.c \
+	src/Queue/Queue.c src/Job/Job.c src/IO/IO.c src/Scheduler/Scheduler.c src/Queue/MinHeap.c -o q_test
 -include $(DEPS)

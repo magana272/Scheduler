@@ -35,3 +35,22 @@ int checkIfMadeIORequest(Job *job, int clock)
   }
   return 0;
 }
+
+Job *parseJob(char *line)
+{
+  Job *job = malloc(sizeof(Job));
+  if (!job)
+  {
+    printf("Malloc Failed");
+    exit(1);
+  }
+  sscanf(line, "%d:%d:%d:%d", &job->pid, &job->arrivalTime, &job->duration, &job->priority);
+  job->timeRemaining = job->duration;
+  job->status = READY;
+  job->timeSlice = 0;
+  job->timeInReadyToRunState = 0;
+  job->timeWaitingForIO = 0;
+  job->timeInRunningState = 0;
+  job->completionTime = 0;
+  return job;
+}

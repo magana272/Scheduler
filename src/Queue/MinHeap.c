@@ -37,7 +37,6 @@ int insertJobMinHeap(JobMinHeap *heap, Job *job)
         {
             break;
         }
-        // Swap
         Job *temp = heap->jobs[parentIndex];
         heap->jobs[parentIndex] = heap->jobs[index];
         heap->jobs[index] = temp;
@@ -69,11 +68,24 @@ Job *extractMinJobMinHeap(JobMinHeap *heap)
         {
             smallestIndex = rightChildIndex;
         }
+        if(leftChildIndex < heap->size && heap->jobs[leftChildIndex]->duration == heap->jobs[smallestIndex]->duration)
+        {
+            if (heap->jobs[leftChildIndex]->pid < heap->jobs[smallestIndex]->pid)
+            {
+                smallestIndex = leftChildIndex;
+            }
+        }
+        if(rightChildIndex < heap->size && heap->jobs[rightChildIndex]->duration == heap->jobs[smallestIndex]->duration)
+        {
+            if (heap->jobs[rightChildIndex]->pid < heap->jobs[smallestIndex]->pid)
+            {
+                smallestIndex = rightChildIndex;
+            }
+        }
         if (smallestIndex == index)
         {
             break;
         }
-        // Swap
         Job *temp = heap->jobs[index];
         heap->jobs[index] = heap->jobs[smallestIndex];
         heap->jobs[smallestIndex] = temp;

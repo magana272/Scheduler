@@ -17,3 +17,5 @@ Job* dequeue(JobQueue* q);
 Job* peek(JobQueue* q);
 JobQueue* newJobQueue();
 JobQueue** newJobQueues(int levels);
+JobQueue *getArrivalQueueFromFile(char *file_name);
+void printQueue(JobQueue* q);

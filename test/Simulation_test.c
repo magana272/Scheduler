@@ -19,12 +19,6 @@ int main(){
     printf("Test Failed: Simulation creation returned NULL\n");
     return 1;
   }
-  // Scheduler* sch = simulation->scheduler;
-  // Job* j = malloc(sizeof(Job));
-  // j->pid = 1;
-  // j->duration = 5;
-  // sch->addJob(sch, j);
-
   test_read_input();
   printf("Testing| Ready to run\n");
   test_add_ready_to_run_job();

@@ -2,9 +2,10 @@
 #include "../Queue/Queue.h"
 #include "../Job/Job.h"
 #include "../Queue/MinHeap.h"
-#define KRED  "\x1B[31m"
-#define KWHT  "\x1B[37m"
-#define KGRN  "\x1B[32m"
+// #define RED  "\x1B[31m"
+// #define WHITE  "\x1B[37m"
+// #define GREEN  "\x1B[32m"
+// #define BLUE  "\x1B[34m"
 #define MAX_LEVELS 3
 
 typedef enum {RR, SJF, MLFS} ScheduleType;
@@ -14,6 +15,7 @@ typedef struct Scheduler{
   int quantum[MAX_LEVELS]; // Time slices for each level
   int n_completed_jobs; // Number of completed jobs
   int current_quantum; // Current quantum for the running job
+  int boost_interval; // Interval for priority boosting
   ScheduleType scheduleType; // Scheduling algorithm type
   JobQueue** Levels; // Array of job queues for different levels
   JobMinHeap* sjf_heap; // Min-heap for SJF scheduling
@@ -42,9 +44,12 @@ int RR_addJob(Scheduler* self, Job* j);
 Job* MLFS_getNext(Scheduler* self);
 int MLFS_addJob(Scheduler* self, Job* j);
 int MLFS_preemptive(Scheduler* self, Job* j);
+int boost(Scheduler* self);
 
 int increment_ready_to_run_state_RR(Scheduler* self);
 int increment_ready_to_run_state_MLFS(Scheduler* self);
 int increment_ready_to_run_state_SJF(Scheduler* self);
 
 int isJobPreempted(Scheduler* scheduler, Job* job);
+
+void printQueues(Scheduler* scheduler);

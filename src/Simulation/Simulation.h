@@ -7,18 +7,19 @@ struct Simulation
     Scheduler *scheduler;
     JobQueue *completed;
     JobQueue *arrivalQueue;
-    JobQueue *(*getArrivingJobs)(void *self, int time);
+    JobQueue *(*getArrivingJobs)(Simulation *self, int time);
+    int verbose_mode;
     int n_completed_jobs;
     int done;
     int total_jobs;
+    int total_simulation_time;
 };
 
 Job *parseJob(char *line);
 JobQueue *readInput(char *file_name);
 int checkIOCompletion(Simulation *simulation, Scheduler *scheduler, int clock);
 Simulation *newSimulation(char *file_name, ScheduleType schedule_type);
-JobQueue *getArrivingJobs(void *self, int time);
+JobQueue *getArrivingJobs(Simulation *self, int time);
 int getNumberofJob(char *file_name);
-void logStatistics(Simulation *simulation);
 int isComplete(Simulation *simulation);
 int add_ready_to_run_job(Simulation* s, int clock);
