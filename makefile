@@ -34,7 +34,7 @@ $(BUILD_DIR)/%.cpp.o: %.cpp
 .PHONY: clean test
 clean:
 	rm -r $(BUILD_DIR)
-	rm -f Scheduler_test minheap_test simulation_test
+	rm -f Scheduler_test minheap_test simulation_test io_test q_test
 test:
 	gcc test/Scheduler_test.c \
 	src/Simulation/Simulation.c \
