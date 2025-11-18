@@ -23,6 +23,16 @@ void logTimeDetails(Simulation *simulation, Job *job, int clock)
 {
     if (simulation->verbose_mode)
     {
+        if(simulation->scheduler->scheduleType == SJF) {
+            printf("%sTime: %d | Current Job PID: %d | Current Job Time Remaining: %d | Current Job Priority: %d | Completed Jobs: %d%s\n",
+               BLUE, clock,
+               job->pid,
+               job->timeRemaining,
+               job->priority,
+               simulation->n_completed_jobs,
+               WHITE);
+            return;
+        }
         printf("%sTime: %d | Current Job PID: %d | Current Job Time Remaining: %d | Current Job Priority: %d\nCompleted Jobs: %d| Curr Time Slice: %d%s\n",
                BLUE, clock,
                job->pid,
