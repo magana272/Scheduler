@@ -7,7 +7,6 @@
 #include "./Scheduler/Scheduler.h"
 #include "./Queue/Queue.h"
 #include "./IO/IO.h"
-#define ORANGE "\x1B[33m"
 int clock = 0;
 
 int main(int argc, char *argv[])
@@ -90,15 +89,14 @@ int main(int argc, char *argv[])
           current_job->completionTime = clock;
           current_job->timeInRunningState++;
           enqueue(simulation->completed, current_job);
-          // scheduler->increment_ready_to_run_state(scheduler);
           break;
         }
         if (current_job_preempted)
         {
           Job *j = current_job;
-          // break;
           current_job = scheduler->getNextJob(scheduler);
           scheduler->addJob(scheduler, j);
+          current_job->timeInRunningState++;
           logPreemption(simulation, j, current_job, clock);
         }
         if (current_job_made_io_request)
