@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
   int current_job_completed = 0;
   int current_job_made_io_request = 0;
   add_ready_to_run_job(simulation, clock);
-  srand(1);
+  os_srand(1);
   while (!isComplete(simulation))
   {
 

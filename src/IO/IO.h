@@ -3,3 +3,4 @@
 #define CHANCE_OF_IO_COMPLETE 4
 int IO_request();
 int IO_complete();
+void os_srand(int i);
