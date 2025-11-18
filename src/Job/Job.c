@@ -21,7 +21,7 @@ int isJobComplete(Job *job)
   }
   else
   {
-    return job->timeRemaining == 1;
+    return job->timeRemaining <= 1;
   }
 }
 
