@@ -33,7 +33,12 @@ int insertJobMinHeap(JobMinHeap *heap, Job *job)
     while (index != 0)
     {
         int parentIndex = (index - 1) / 2;
-        if (heap->jobs[parentIndex]->duration <= heap->jobs[index]->duration)
+        if (heap->jobs[parentIndex]->timeRemaining < heap->jobs[index]->timeRemaining)
+        {
+            break;
+        }
+        if (heap->jobs[parentIndex]->timeRemaining == heap->jobs[index]->timeRemaining &&
+            heap->jobs[parentIndex]->pid <= heap->jobs[index]->pid)
         {
             break;
         }
@@ -60,22 +65,22 @@ Job *extractMinJobMinHeap(JobMinHeap *heap)
         int rightChildIndex = 2 * index + 2;
         int smallestIndex = index;
 
-        if (leftChildIndex < heap->size && heap->jobs[leftChildIndex]->duration < heap->jobs[smallestIndex]->duration)
+        if (leftChildIndex < heap->size && heap->jobs[leftChildIndex]->timeRemaining < heap->jobs[smallestIndex]->timeRemaining)
         {
             smallestIndex = leftChildIndex;
         }
-        if (rightChildIndex < heap->size && heap->jobs[rightChildIndex]->duration < heap->jobs[smallestIndex]->duration)
+        if (rightChildIndex < heap->size && heap->jobs[rightChildIndex]->timeRemaining < heap->jobs[smallestIndex]->timeRemaining)
         {
             smallestIndex = rightChildIndex;
         }
-        if (leftChildIndex < heap->size && heap->jobs[leftChildIndex]->duration == heap->jobs[smallestIndex]->duration)
+        if (leftChildIndex < heap->size && heap->jobs[leftChildIndex]->timeRemaining == heap->jobs[smallestIndex]->timeRemaining)
         {
             if (heap->jobs[leftChildIndex]->pid < heap->jobs[smallestIndex]->pid)
             {
                 smallestIndex = leftChildIndex;
             }
         }
-        if (rightChildIndex < heap->size && heap->jobs[rightChildIndex]->duration == heap->jobs[smallestIndex]->duration)
+        if (rightChildIndex < heap->size && heap->jobs[rightChildIndex]->timeRemaining == heap->jobs[smallestIndex]->timeRemaining)
         {
             if (heap->jobs[rightChildIndex]->pid < heap->jobs[smallestIndex]->pid)
             {

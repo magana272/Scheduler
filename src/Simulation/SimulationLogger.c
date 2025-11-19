@@ -234,7 +234,7 @@ void logStatistics(Simulation *simulation)
                 RED, completed_job->pid, WHITE,
                 RED, completed_job->timeInReadyToRunState, WHITE,
                 RED, completed_job->timeWaitingForIO, WHITE,
-                RED, completed_job->timeInReadyToRunState + completed_job->timeWaitingForIO, WHITE);
+                RED, completed_job->completionTime - completed_job->arrivalTime, WHITE);
         printf("%s", formatterString);
         if (completed_job->completionTime - completed_job->arrivalTime < shortest_job_completion_time)
         {

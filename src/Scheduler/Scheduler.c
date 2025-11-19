@@ -160,9 +160,14 @@ int SJF_preemptive(Scheduler* self, Job *j)
     {
         return 0;
     }
-    if (next_job->duration < j->duration)
+    if (next_job->timeRemaining < j->timeRemaining)
     {
         // printf("\t%s[Preempting] Job PID: %d with Job PID: %d\n%s", RED, j->pid, next_job->pid, WHITE);
+        return 1;
+    }
+    if (next_job->timeRemaining == j->timeRemaining && next_job->pid < j->pid)
+    {
+
         return 1;
     }
     return 0;
@@ -216,6 +221,13 @@ int MLFS_addJob(Scheduler* self, Job *j)
         PRIORITY = j->priority;
         if (PRIORITY < MAX_LEVELS - 1) {
             PRIORITY += 1;
+        }
+    }
+    else if (j->status == READY) {
+        if (j->timeInRunningState > 0) {
+            PRIORITY = j->priority;
+        } else {
+            PRIORITY = 0;
         }
     }
     else {

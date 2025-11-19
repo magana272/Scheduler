@@ -8,14 +8,17 @@ int main()
     Job *job1 = malloc(sizeof(Job));
     job1->pid = 1;
     job1->duration = 5;
+    job1->timeRemaining = 5;
 
     Job *job2 = malloc(sizeof(Job));
     job2->pid = 2;
     job2->duration = 3;
+    job2->timeRemaining = 3;
 
     Job *job3 = malloc(sizeof(Job));
     job3->pid = 3;
     job3->duration = 8;
+    job3->timeRemaining = 8;
 
     insertJobMinHeap(heap, job1);
     insertJobMinHeap(heap, job2);
