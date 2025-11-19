@@ -47,7 +47,7 @@ Scheduler* newScheduler(ScheduleType schedule_type)
         scheduler->current_quantum = scheduler->quantum[0];
         scheduler->preemptive = MLFS_preemptive;
         scheduler->increment_ready_to_run_state = increment_ready_to_run_state_MLFS;
-        scheduler->boost_interval = 5;
+        scheduler->boost_interval = 40;
         break;
     default:
         scheduler->getNextJob = RR_getNext;
