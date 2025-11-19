@@ -4,9 +4,20 @@
 
 
 This project implements a comprehensive CPU scheduling simulator that supports three different scheduling algorithms:
-- **Multi-Level Feedback Scheduling (MLFS)** - A preemptive algorithm with multiple priority levels
-- **Round Robin (RR)** - A time-sliced preemptive algorithm
-- **Shortest Job First (SJF)** - A preemptive algorithm that prioritizes jobs with shorter remaining time
+
+## **Scheduling Algorithms**
+
+- **`Multi-Level Feedback Scheduling (MLFS)`** - A preemptive algorithm with multiple priority levels
+  - **Level 0**: `2 time units` quantum (highest priority)
+  - **Level 1**: `10 time units` quantum (medium priority)
+  - **Level 2**: `20 time units` quantum (lowest priority)
+  - **Boosting**: Jobs promoted to highest priority every `40 time units`
+
+- **`Round Robin (RR)`** - A time-sliced preemptive algorithm
+  - **Quantum**: `5 time units`
+
+- **`Shortest Job First (SJF)`** - A preemptive algorithm that prioritizes jobs with shorter remaining time
+  - **Strategy**: Preemption based on remaining execution time
 
 The simulator provides detailed statistics and supports verbose mode for debugging and analysis.
 
@@ -203,7 +214,7 @@ Three distinct scheduling algorithms implemented with their own strategies:
   - Three priority levels (0, 1, 2) with different time quanta
   - Level 0: 2 time units, Level 1: 10 time units, Level 2: 20 time units
   - Jobs demoted to lower priority levels when time slice expires
-  - Periodic boosting every 5 time units moves all jobs to highest priority
+  - Periodic boosting every 40 time units moves all jobs to highest priority
 
 #### 3. **Job Management** (`src/Job/`)
 - Job lifecycle management with states: READY, RUNNING, WAITING_FOR_IO, COMPLETE
@@ -231,32 +242,6 @@ Example:
 10:0:15:0    # Job PID=10, arrives at time 0, duration 15, priority 0
 20:2:8:1     # Job PID=20, arrives at time 2, duration 8, priority 1
 ```
-
-
-## Algorithm Details & Performance
-
-### Round Robin (RR)
-- **Time Complexity**: O(1) for job selection, O(n) for queue operations
-- **Characteristics**: Fair time sharing, predictable response time
-- **Best For**: Interactive systems, time-sharing environments
-- **Quantum**: 5 time units
-
-### Shortest Job First (SJF)
-- **Time Complexity**: O(log n) for job insertion/extraction using min-heap
-- **Characteristics**: Minimizes average waiting time, can cause starvation
-- **Best For**: Batch processing systems with known job durations
-- **Preemption**: Based on remaining execution time
-
-### Multi-Level Feedback Scheduling (MLFS)
-- **Time Complexity**: O(1) for most operations across multiple queues
-- **Characteristics**: Balances response time and throughput, prevents starvation
-- **Best For**: General-purpose operating systems
-- **Priority Levels**:
-  - Level 0 (highest): 2 time units quantum
-  - Level 1 (medium): 10 time units quantum
-  - Level 2 (lowest): 20 time units quantum
-- **Boosting**: Every 40 time units, all jobs promoted to highest priority
-
 ## Testing & Validation
 
 ### Unit Tests
