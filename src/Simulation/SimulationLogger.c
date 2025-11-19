@@ -223,7 +223,7 @@ void logStatistics(Simulation *simulation)
         {
             break;
         }
-        char *formatterString = malloc(sizeof(char) * 1000);
+
 
         if (!formatterString)
         {
@@ -247,6 +247,9 @@ void logStatistics(Simulation *simulation)
         accumulated_ready_time += completed_job->timeInReadyToRunState;
         accumulated_sleeping_time += completed_job->timeWaitingForIO;
         accumulated_completion_time += completed_job->completionTime - completed_job->arrivalTime;
+
+        // Free the job after using it for statistics
+        destroyJob(completed_job);
     }
     printf("==============================================================\n");
     printf("%s%-25s ---------------- %s%d%s\n", BLUE, "Total simulation time", RED, simulation->total_simulation_time, WHITE);
@@ -257,4 +260,6 @@ void logStatistics(Simulation *simulation)
     printf("%s%-25s ---------------- %s%d%s\n", BLUE, "Average sleeping on I/O", RED, accumulated_sleeping_time / total_number_of_jobs, WHITE);
     printf("%s%-25s ---------------- %s%d%s\n", BLUE, "Average completion time", RED, accumulated_completion_time / total_number_of_jobs, WHITE);
     printf("==============================================================\n%s", WHITE);
+    free(formatterString);
+    return;
 }

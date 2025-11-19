@@ -21,7 +21,6 @@ Scheduler* newScheduler(ScheduleType schedule_type)
         scheduler->getNextJob = RR_getNext;
         scheduler->addJob = RR_addJob;
         scheduler->Levels = newJobQueues(1); // Default is 1
-        scheduler->waiting_for_IO_queue = newJobQueue();
         scheduler->quantum[0] = 5;
         scheduler->quantum[1] = 0;
         scheduler->quantum[2] = 0;
@@ -139,12 +138,16 @@ int boost(Scheduler* self)
         enqueue(temp, job);
     }
     if(temp->size == 0){
+        free(temp->jobs);
+        free(temp);
         return 0;
     }
     while (!isEmpty(temp))
     {
         self->addJob(self, dequeue(temp));
     }
+    free(temp->jobs);
+    free(temp);
     return 0;
 }
 int SJF_preemptive(Scheduler* self, Job *j)
@@ -162,7 +165,6 @@ int SJF_preemptive(Scheduler* self, Job *j)
     }
     if (next_job->timeRemaining < j->timeRemaining)
     {
-        // printf("\t%s[Preempting] Job PID: %d with Job PID: %d\n%s", RED, j->pid, next_job->pid, WHITE);
         return 1;
     }
     if (next_job->timeRemaining == j->timeRemaining && next_job->pid < j->pid)

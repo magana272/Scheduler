@@ -12,6 +12,13 @@ Job *createJob(int pid, int arrivalTime, int duration, Status status)
   job->status = READY;
   return job;
 }
+
+void destroyJob(Job *job)
+{
+  if (job != NULL) {
+    free(job);
+  }
+}
 int isJobComplete(Job *job)
 {
 

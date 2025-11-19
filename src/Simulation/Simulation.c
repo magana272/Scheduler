@@ -6,10 +6,6 @@
 #include "../IO/IO.h"
 #include <stdio.h>
 #include <stdlib.h>
-#define BLUE "\x1B[34m"
-#define RED "\x1B[31m"
-#define WHITE "\x1B[37m"
-
 Simulation *newSimulation(char *file_name, ScheduleType schedule_type)
 {
   // Get the number of jobs
@@ -79,6 +75,8 @@ int checkIOCompletion(Simulation *simulation, Scheduler *scheduler, int clock)
         enqueue(new_queue, job);
       }
     }
+    free(scheduler->waiting_for_IO_queue->jobs);
+    free(scheduler->waiting_for_IO_queue);
     scheduler->waiting_for_IO_queue = new_queue;
     return 1;
   }
@@ -118,5 +116,57 @@ int add_ready_to_run_job(Simulation *s, int clock)
     }
     s->scheduler->addJob(s->scheduler, j);
   }
+  free(arrivingJobs->jobs);
+  free(arrivingJobs);
   return 0;
+}
+
+int destroy(Simulation* sim){
+  int jobs_freed = 0;
+  while(!isEmpty(sim->completed)){
+    Job* job = dequeue(sim->completed);
+    destroyJob(job);
+    jobs_freed++;
+  }
+  free(sim->completed->jobs);
+  free(sim->completed);
+  while(!isEmpty(sim->arrivalQueue)){
+    Job* job = dequeue(sim->arrivalQueue);
+    destroyJob(job);
+    jobs_freed++;
+  }
+  free(sim->arrivalQueue->jobs);
+  free(sim->arrivalQueue);
+  while(!isEmpty(sim->scheduler->waiting_for_IO_queue)){
+    Job* job = dequeue(sim->scheduler->waiting_for_IO_queue);
+    destroyJob(job);
+    jobs_freed++;
+  }
+  free(sim->scheduler->waiting_for_IO_queue->jobs);
+  free(sim->scheduler->waiting_for_IO_queue);
+
+  if(sim->scheduler->scheduleType == SJF){
+    while(sim->scheduler->sjf_heap->size > 0){
+      Job* job = extractMinJobMinHeap(sim->scheduler->sjf_heap);
+      destroyJob(job);
+      jobs_freed++;
+    }
+    freeJobMinHeap(sim->scheduler->sjf_heap);
+  }
+  if(sim->scheduler->scheduleType == MLFS ||   sim->scheduler->scheduleType == RR){
+    for(int i=0; i<MAX_LEVELS;i++){
+      while(!isEmpty(sim->scheduler->Levels[i])){
+        Job* job = dequeue(sim->scheduler->Levels[i]);
+        destroyJob(job);
+        jobs_freed++;
+      }
+      free(sim->scheduler->Levels[i]->jobs);
+      free(sim->scheduler->Levels[i]);
+    }
+    free(sim->scheduler->Levels);
+  }
+  free(sim->scheduler);
+  free(sim);
+  return 0;
+
 }

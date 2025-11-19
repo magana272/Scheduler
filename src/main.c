@@ -128,4 +128,6 @@ int main(int argc, char *argv[])
   }
   simulation->total_simulation_time = clock;
   logStatistics(simulation);
+  destroy(simulation);
+
 }

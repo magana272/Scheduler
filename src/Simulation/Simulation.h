@@ -23,3 +23,4 @@ JobQueue *getArrivingJobs(Simulation *self, int time);
 int getNumberofJob(char *file_name);
 int isComplete(Simulation *simulation);
 int add_ready_to_run_job(Simulation *s, int clock);
+int destroy(Simulation *simulation);

@@ -26,6 +26,7 @@ typedef struct Job
 } Job;
 
 Job *createJob(int pid, int arrivalTime, int duration, Status status);
+void destroyJob(Job *job);
 int checkIfMadeIORequest(Job *job, int clock);
 int isJobComplete(Job *job);
 Job *parseJob(char *line);
