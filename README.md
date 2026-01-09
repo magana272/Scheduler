@@ -1,6 +1,6 @@
 
-# $$\text{Project 2: CPU Scheduling Simulator}$$
-#### $$\text{Manuel Magana, Bhoomika Panday, Tridev Prabhu}$$
+# $$\text{CPU Scheduling Simulator}$$
+#### $$\text{Manuel Magana}$$
 
 
 This project implements a comprehensive CPU scheduling simulator that supports three different scheduling algorithms:
